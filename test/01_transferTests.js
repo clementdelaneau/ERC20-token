@@ -14,17 +14,17 @@ contract('Erc20Tests', function (accounts) {
 	it('Test totalSupply', async function () {
 		totalSupply = 1
 		let result = await ZyzCoinInstance.balanceOf(accounts[0],{from: accounts[0]});
-	let balance = await ZyzCoinInstance.balance(accounts[0])
+	let balance = await ZyzCoinInstance.balanceOf(accounts[0])
 		
 		assert.equal(result.toString(), balance.toString())
 		
 	})
-	
+/*	
 	it('Test transfer', async function() {
 		let result = await ZyzCoinInstance.transfer(accounts[1],500, {from: accounts[0]});
-		let account1Supply = await ZyzCoinInstance.balance(accounts[1])
+		let account1Supply = await ZyzCoinInstance.balanceOf(accounts[1])
 		assert.equal(account1Supply, 500 )
-	})
+	})*/
 	
 	
 })

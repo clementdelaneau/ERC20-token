@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.12;
 
 import "./ZyzCoin.sol";
 
@@ -12,9 +12,9 @@ contract CrowdSale {
 
     event TokensPurchased(address indexed purchaser, address indexed beneficiary, uint value, uint amount);
 
+ZyzCoin private _token;
 	address private _owner;
     address[] public investors;
-    ZyzCoin private _token;
 
   // The rate is the conversion between wei and the smallest and indivisible token unit.
   uint private _rate;
@@ -22,12 +22,11 @@ contract CrowdSale {
   // Amount of wei raised
   uint private _weiRaised;
 	
-	constructor() public{
+	constructor(address add) public {
 
 		_owner = msg.sender;
-		_token = new ZyzCoin();
 		_rate = 3;
-		addToWhiteList(_owner);	   		
+    _token = ZyzCoin(add);
 	}
 
     function () external payable {
@@ -107,8 +106,8 @@ function buyTokens(address beneficiary) public payable {
   )
     internal pure
   {
-    require(beneficiary != address(0));
-    require(weiAmount != 0);
+    require(beneficiary != address(0), "beneficiary is null address");
+    require(weiAmount != 0, "weiAmount is null");
   }
 
 

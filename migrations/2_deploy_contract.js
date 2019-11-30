@@ -3,5 +3,5 @@ const CrowdSale = artifacts.require("./CrowdSale.sol")
 
 module.exports = function(deployer) {
 	deployer.deploy(ZyzCoin);
-	deployer.deploy(CrowdSale);
+	deployer.deploy(CrowdSale,ZyzCoin.address);
 };

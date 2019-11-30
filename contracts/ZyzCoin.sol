@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.12;
 
 
 import "./SafeMath.sol";
@@ -70,34 +70,40 @@ contract ZyzCoin is ZyzCoinInterface, Owned
 {
 	using SafeMath for uint;
 
-     mapping(address => uint256) public balance;
+     mapping(address => uint256) private _balance;
      // Owner of account approves the transfer of an amount to another account
     mapping(address => mapping (address => uint)) allowed;
 
 
-    bytes32 public symbol;
-    bytes32 public  name;
-    uint8 public decimals;
+    bytes32 public _symbol;
+    bytes32 public  _name;
+    uint8 public _decimals;
     uint _totalSupply;
 
      constructor() public {
-        symbol = "ZYZ";
-        name = "ZyzCoin";
-        decimals = 18;
-        _totalSupply = 1000000 * 10**uint(decimals);
-        balance[msg.sender] = _totalSupply;
+        _symbol ="ZYZ";
+        _name ="ZyzCoin";
+        _decimals = 18;
+        _totalSupply = 100000000000;
+        _balance[msg.sender] = _totalSupply;
         emit Transfer(address(0), msg.sender, _totalSupply);
+    }
+
+
+    modifier onlyBy(address add) {
+    	require(msg.sender == add);
+    	_;
     }
 
 
 
 
     function totalSupply() public view returns (uint) {
-        return _totalSupply.sub(balance[address(0)]);
+        return _totalSupply.sub(_balance[address(0)]);
     }
 
-   function balanceOf(address _tokenOwner) public view returns (uint256) {
-   	return balance[_tokenOwner];
+   function balanceOf(address _tokenOwner) public view onlyBy(_tokenOwner) returns (uint256) {
+   	return _balance[_tokenOwner];
    }
 
     // ------------------------------------------------------------------------
@@ -112,9 +118,9 @@ contract ZyzCoin is ZyzCoinInterface, Owned
 
    function transfer(address _to, uint _tokens) public returns ( bool success) {
 
-   	require (balance[msg.sender] >= _tokens);
-   	balance[msg.sender] -=  _tokens;
-   	balance[_to] += _tokens;
+   	require (balanceOf(msg.sender) >= _tokens, "insuficiant funds");
+   	_balance[msg.sender] -=  _tokens;
+   	_balance[_to] += _tokens;
    	emit Transfer(msg.sender, _to, _tokens);
    	return true;
    }
@@ -129,11 +135,11 @@ contract ZyzCoin is ZyzCoinInterface, Owned
 
    function transferFrom(address _from, address _to, uint _tokens) public returns (bool) {
 
-   	require (balance[_from]>= _tokens);
-   	require (allowed[_from][msg.sender]>= _tokens);
-   	balance[_from] -= _tokens;
+   	require (_balance[_from]>= _tokens, "_from balance does not have suficient tokens");
+   	require (allowed[_from][_to]>= _tokens, "_to is not allowed for this token amount");
+   	_balance[_from] -= _tokens;
    	allowed[_from][msg.sender] -= _tokens;
-   	balance[_to] += _tokens;
+   	_balance[_to] += _tokens;
    	emit Transfer(_from, _to, _tokens);
    	return true;
    	
